@@ -3,7 +3,13 @@
 
 #include "converteutf.h"
 
-
+int confere_endian(unsigned int bom){
+    if(bom == 0x0000FEFF)
+        return 'b';
+    if(bom == 0xFFFE0000)  //big endian
+        return 'l';
+    
+}
 //le o byte e ve se precisa do byte seguinte para montar o caractere
 int utf8_size(unsigned char aux){
     if((aux>>7) == 0x00){
@@ -26,17 +32,15 @@ int utf8_size(unsigned char aux){
 //numero de caracteres no arquivo( == numero de bytes)
 int numChar(FILE *arquivo_entrada){
     char c;
-    int count = 0;
+    int count = -1;
     for(c = fgetc(arquivo_entrada); c!=EOF; c = fgetc(arquivo_entrada)){
-        c+=1;
+        count+=1;
     }
-    return c--;
+    return count;
 }
 
 int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
-    char bom [4] = {0xFF, 0xFE, 0x00, 0x00};
-    fwrite(bom, sizeof(bom),1, arquivo_saida);
-
+    
     
 }
 int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
