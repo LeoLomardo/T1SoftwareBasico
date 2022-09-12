@@ -3,6 +3,20 @@
 
 #include "converteutf.h"
 
+/*
+int confereTipo(arquivo_entrada){
+    unsigned int byteConfere;
+    fread(byteConfere,sizeof(int),1, arquivo_entrada);
+
+    if((byteConfere&0xFEFF) == 0xFEFF || (byteConfere&0xFEFF) == 0xFFFE0000){
+        converteUtf32Para8(arquivo_entrada, arquivo_saida);
+    }else
+        converteUtf32Para8(arquivo_entrada, arquivo_saida);
+
+
+}*/
+
+
     //ele pega o 1 byte = 1 char, verifica se o bit mais significativo é 0 11 111 1110, dividindo em 4 casos possíveil
 int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
     unsigned int auxLeitura;   //caracter que le byte por byte 
