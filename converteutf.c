@@ -1,34 +1,32 @@
 /* Leo Lomardo - 2020201 - 3WA */
-/* Lucas Lucena -  - 3WB  */
+/* Lucas Lucena - 2010796 - 3WB */
 
 #include "converteutf.h"
 
-int confere_endian(unsigned int bom){
-    if(bom == 0x0000FEFF)
-        return 'b';
-    if(bom == 0xFFFE0000)  //big endian
-        return 'l';
-    
-}
-//le o byte e ve se precisa do byte seguinte para montar o caractere
-int utf8_size(unsigned char aux){
-    if((aux>>7) == 0x00){
-        printf("Char de 1 byte");
-        return 1;
-    }else if((aux >> 5) == 0xC0){
-        printf("Char de 2 byte");
-        return 2;
-    }else if((aux>>4) == 0xE0){
-        printf("Char de 3 byte");
-        return 3;
-    }else if((aux>>5) == 0xF0){
-        printf("Char de 4 byte");
-        return 4;
-    }else{
-        printf("Fora do alcance");
-        return -1;
+char confere_endian(unsigned int bom){
+    if(bom == 0x0000FEFF){   //little endian
+        return 'b';}
+    else if(bom == 0xFFFE0000){  //big endian
+        return 'l';}
+    else{
+        return 'e';
     }
 }
+
+unsigned int inverteEndian(unsigned int entrada){
+    unsigned int resultado = 0x00;
+
+    resultado |= ((0xff & entrada) << 24);
+    resultado |= (((0xff << 8) & entrada) <<8);
+    resultado |= (((0xff << 16) & entrada) >> 8);
+    resultado |= (((0xff << 24) & entrada) >> 24);
+
+    return resultado;
+}
+
+
+/*              CHECKPOINT              */
+
 //numero de caracteres no arquivo( == numero de bytes)
 int numChar(FILE *arquivo_entrada){
     char c;
@@ -40,9 +38,33 @@ int numChar(FILE *arquivo_entrada){
 }
 
 int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
-    
+    char bom;
+    unsigned int leitura;
+       
     
 }
 int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
-    
+    unsigned char resultado[4] = {0x00, 0x80, 0x80, 0x80}; //independente do tamanho, do segundo byte em diante ele vai comecar com 0x80 
+    unsigned char bom;
+    unsigned int leitura;
+
+    fread(&leitura, sizeof(int), 1, arquivo_entrada);
+
+    //utilizei a funcao que confere a endian do arquivo atraves do bom para verificar se o bom esta presente
+    if(confere_endian(leitura) == 'e'){
+        printf("BOM invalido\n");
+        return -1;
+    }else if(confere_endian(leitura) == 'b'){
+        inverteEndian(leitura);
+    }else if(confere_endian(leitura) == 'l'){
+        while(fread(&leitura, sizeof(int), 1, arquivo_entrada) != 0){
+            if(leitura > 0x10FFFF){
+                printf("Ultrapassou valor maximo (U+10FFFF)\n"); //no enunciado fala que nao precisa, mantive apenas para organizar pensamento
+                return -1;
+            }
+            
+
+        }
+    }
+
 }
