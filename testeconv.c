@@ -20,55 +20,30 @@ int utf8_size(unsigned char aux){
         return -1;
     }
 }
+
+
+//fgetc sempre le char por char, independente do tamanho da variavel q ta armazenando
 //numero de caracteres no arquivo( == numero de bytes)
 int numChar(FILE *arquivo_entrada){
     char c;
     int count = 0;
     for(c = fgetc(arquivo_entrada); c!=EOF; c = fgetc(arquivo_entrada)){
-        c+=1;
+        count++;
     }
-    return c--;
+    return count ;
 }
 int main(void){
 
     FILE *arquivo_entrada;
     FILE *arquivo_saida;
     arquivo_saida = fopen("utf32Saida.bin", "wb");
-    arquivo_entrada = fopen("utf8.bin", "rb");
+    arquivo_entrada = fopen("utf32.bin", "rb");
     unsigned int aux;
 
-    for(aux = fgetc(arquivo_entrada); aux !=EOF; aux = fgetc(arquivo_entrada)){
-        int u8_size = utf8_size(aux);
 
-        unsigned int unicodeVet[u8_size];
-        switch (u8_size){
-            case(1):
-                unicodeVet[0] = 0x00;
-                unicodeVet[1] = 0x00;
-                unicodeVet[2] = 0x00;
-                unicodeVet[3] = 0x00 & (aux>>2);
-            case(2):
-                unicodeVet[0] = 0x00;
-                unicodeVet[1] = 0x00;
-                unicodeVet[2] = 0x00;
-                unicodeVet[3] = 0x00 & (aux>>2);
-            case(3):
-                unicodeVet[0] = 0x00;
-                unicodeVet[1] = 0x00;
-                unicodeVet[2] = 0x00;
-                unicodeVet[3] = 0x00 & (aux>>2);
-            case(4):
-                unicodeVet[0] = 0x00;
-                unicodeVet[1] = 0x00;
-                unicodeVet[2] = 0x00;
-                unicodeVet[3] = 0x00 & (aux>>2);
-            default:
-                printf("Fora do alcance");
-                
-        }
+    int size = numChar(arquivo_entrada);
+    printf("%d", size);
 
-
-    }
 
     fclose(arquivo_saida);
     fclose(arquivo_entrada);
