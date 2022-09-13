@@ -28,7 +28,7 @@ unsigned int inverteEndian(unsigned int entrada){
 /*              CHECKPOINT              */
 
 //numero de caracteres no arquivo( == numero de bytes)
-int numChar(FILE *arquivo_entrada){
+int numBytes(FILE *arquivo_entrada){
     char c;
     int count = -1;
     for(c = fgetc(arquivo_entrada); c!=EOF; c = fgetc(arquivo_entrada)){
@@ -47,7 +47,8 @@ int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
     unsigned char resultado[4] = {0x00, 0x80, 0x80, 0x80}; //independente do tamanho, do segundo byte em diante ele vai comecar com 0x80 
     unsigned char bom;
     unsigned int leitura;
-
+    int sizeBytes = numbytes(arquivo_entrada);
+    
     fread(&leitura, sizeof(int), 1, arquivo_entrada);
 
     //utilizei a funcao que confere a endian do arquivo atraves do bom para verificar se o bom esta presente
@@ -57,14 +58,14 @@ int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
     }else if(confere_endian(leitura) == 'b'){
         inverteEndian(leitura);
     }else if(confere_endian(leitura) == 'l'){
-        while(fread(&leitura, sizeof(int), 1, arquivo_entrada) != 0){
+        for(int i=0; i <=sizeBytes; i+=4){
+            read(&leitura, sizeof(int), 1, arquivo_entrada);
             if(leitura > 0x10FFFF){
                 printf("Ultrapassou valor maximo (U+10FFFF)\n"); //no enunciado fala que nao precisa, mantive apenas para organizar pensamento
                 return -1;
             }
-            
-
         }
     }
 
 }
+
