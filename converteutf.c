@@ -5,29 +5,20 @@
 
 
 int utf8_size(unsigned char aux){
-    if((aux>>7) == 0x00){
-        printf("Char de 1 byte");
-        return 1;
-    }else if((aux >> 5) == 0xC0){
-        printf("Char de 2 byte");
-        return 2;
-    }else if((aux>>4) == 0xE0){
+    if((aux>>3) == 0x1E){
+        printf("Char de 4 byte");
+        return 4;
+    }else if((aux >> 4) == 0xE){
         printf("Char de 3 byte");
         return 3;
+    }else if((aux>>5) == 0x6){
+        printf("Char de 2 byte");
+        return 2;
     }
-    printf("Char de 4 byte");
-    return 4;
+    printf("Char de 1 byte");
+    return 1;
 }
-unsigned int inverteEndian(unsigned int entrada){
-    unsigned int resultado = 0x00;
 
-    resultado |= ((0xFF & entrada) << 24);
-    resultado |= (((0xFF << 8) & entrada) <<8);
-    resultado |= (((0xFF << 16) & entrada) >> 8);
-    resultado |= (((0xFF << 24) & entrada) >> 24);
-
-    return resultado;
-}
 
 int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
     unsigned char percorreArq;
@@ -37,16 +28,11 @@ int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
     unsigned char aux2 = 0;
     unsigned char aux3 = 0;
 
-    unsigned int bom = 0x0000FEFF;
-    fwrite(&bom, sizeof(int),1,arquivo_saida);
     
-
-    //ESSA DESGRACA DE 'BOM' TA FODA DE IMPLEMENTAR, CHEGUEI ATE 70% E PRECISO JANTAR, 23 E NN COMI NADA TENTANDO FAZER ISSO, 
-    //ODEIO BITS, TO DOIDO PRA CRIAREM O COMPUTADOR QUANTICO PRA ELES DEIXAREM DE EXISTIR QBITS>>bits 
+    unsigned int bom = 0x0000feff;
+    fwrite(&bom, 4,1,arquivo_saida);
     fread(&percorreArq,sizeof(char),1,arquivo_entrada);
 
-    
-    
     do{
          numBytes = utf8_size(percorreArq);
 
@@ -103,12 +89,10 @@ int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
             } 
 
         }while(fread(&percorreArq,sizeof(char),1,arquivo_entrada));
-
+    
     return 0;
 }
-
-/*ALI PRA CIMA TA TUDO CERTO. O DEDO DE QUEM MEXER VAI CAIR*/
-
+/*          REFAZER TUDO DAQUI PRA BAIXO*/
 int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
     unsigned char resultado[4] = {0x00, 0x80, 0x80, 0x80}; //independente do tamanho, do segundo byte em diante ele vai comecar com 0x80 
     unsigned char bom;
@@ -135,4 +119,3 @@ int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
     }
 
 }
-

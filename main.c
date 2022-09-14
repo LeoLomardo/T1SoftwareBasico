@@ -1,60 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TUDO_ZERO 0x00000000
 
-//le o byte e ve se precisa do byte seguinte para montar o caractere
 int utf8_size(unsigned char aux){
-    if((aux>>7) == 0x00){
-        printf("Char de 1 byte");
-        return 1;
-    }else if((aux >> 5) == 0xC0){
-        printf("Char de 2 byte");
-        return 2;
-    }else if((aux>>4) == 0xE0){
+    if((aux>>3) == 0x1E){
+        printf("Char de 4 byte");
+        return 4;
+    }else if((aux >> 4) == 0xE){
         printf("Char de 3 byte");
         return 3;
+    }else if((aux>>5) == 0x6){
+        printf("Char de 2 byte");
+        return 2;
     }
-    printf("Char de 4 byte");
-    return 4;
+    printf("Char de 1 byte");
+    return 1;
 }
-void dump (void *p, int n, FILE *arquivo_saida){
-  unsigned char *p1 = p;
-  while (n--){
-    fwrite(p1, 1, 1, arquivo_saida);
-    printf("%p - %02x\n", p1, *p1);
-    p1++;
-  }
-}
-unsigned int inverteEndian(unsigned int entrada){
-    unsigned int resultado = 0x00;
 
-    resultado |= ((0xFF & entrada) << 24);
-    resultado |= (((0xFF << 8) & entrada) <<8);
-    resultado |= (((0xFF << 16) & entrada) >> 8);
-    resultado |= (((0xFF << 24) & entrada) >> 24);
-
-    return resultado;
-}
-//fgetc sempre le char por char, independente do tamanho da variavel q ta armazenando
-//numero de caracteres no arquivo( == numero de bytes)
-// int sizeChar(unsigned char c){
-//     int size = 1;
-//     if((c & 0x80) == 1){
-//         size+=1;
-//     }else if((c & 0xC0) == 1){
-//         size+=2;
-//     }else if((c & 0xE0) == 1){
-//         size+=3;
-//     }
-//     return size;
-// }
-int main(void){
-
+int main(void){    
     FILE *arquivo_entrada;
     FILE *arquivo_saida;
     arquivo_saida = fopen("utf32Saida.bin", "wb");
-    arquivo_entrada = fopen("utf8.bin", "rb");
+    arquivo_entrada = fopen("utf8_peq.bin", "rb");
 
     
     unsigned char percorreArq;
@@ -64,18 +31,9 @@ int main(void){
     unsigned char aux2 = 0;
     unsigned char aux3 = 0;
 
-    //unsigned int bom = 0xFFFE0000;
     
-
-    // unsigned char bom = 0x0000EFFF;
-    // unsigned int bom = 0xfffe0000;
-    // unsigned char bom[4] = {0xFF, 0xFE, 0x00,0x00 };
     unsigned int bom = 0x0000feff;
     fwrite(&bom, 4,1,arquivo_saida);
-    // dump(&bom, sizeof(bom), arquivo_saida);
-
-    //ESSA DESGRACA DE 'BOM' TA FODA DE IMPLEMENTAR, CHEGUEI ATE 70% E PRECISO JANTAR, 23 E NN COMI NADA TENTANDO FAZER ISSO, 
-    //ODEIO BITS, TO DOIDO PRA CRIAREM O COMPUTADOR QUANTICO PRA ELES DEIXAREM DE EXISTIR QBITS>>bits 
     fread(&percorreArq,sizeof(char),1,arquivo_entrada);
 
     do{
