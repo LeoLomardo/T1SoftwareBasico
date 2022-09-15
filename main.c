@@ -32,7 +32,7 @@ int main(void){
     unsigned char aux3 = 0;
 
     
-    unsigned int bom = 0x0000feff;
+    unsigned int bom = 0xfffe0000;
     fwrite(&bom, 4,1,arquivo_saida);
     fread(&percorreArq,sizeof(char),1,arquivo_entrada);
 
