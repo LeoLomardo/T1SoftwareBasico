@@ -52,7 +52,7 @@ int main(void){
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
                 }else if((percorreArq >= 0x0080) && (percorreArq <= 0x07FF)){
-                    escreverArq = 0xC0 | ((percorreArq >> 10) & 0xDF);
+                    escreverArq = 0xC0 | ((percorreArq >> 9) & 0xDF);
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
 
@@ -61,32 +61,32 @@ int main(void){
                     escreverArq = 0x00;
 
                 }else if((percorreArq >= 0x0800) && (percorreArq <= 0xFFFF)){
-                    escreverArq = 0xE0 | ((percorreArq >> 18) & 0xEF);  //E0 = 11100000 & DF = 11011111
+                    escreverArq = 0xE0 | ((percorreArq >> 14) & 0xEF);  //E0 = 11100000 & DF = 11011111
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
 
-                    escreverArq = 0x80 | ((percorreArq >> 12) & 0xBF);
+                    escreverArq = 0x80 | ((percorreArq >> 7) & 0xBF);
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
 
-                    escreverArq = 0x80 | (percorreArq & 0xBF);
+                    escreverArq = 0x80 | (percorreArq>>1 & 0xBF);
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);   
                     escreverArq = 0x00;  
 
-                }else if((percorreArq >= 0x10000) && (percorreArq < 0x10FFFF)){
-                    escreverArq = 0xF0 | ((percorreArq >> 24) & 0xF7);
+                }else if((percorreArq >= 0x10000) && (percorreArq <= 0x10FFFF)){
+                    escreverArq = 0xF0 | ((percorreArq >> 28) & 0xF7);
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
 
-                    escreverArq = 0x80 | ((percorreArq >> 21) & 0xBF);
+                    escreverArq = 0x80 | ((percorreArq >> 21) & 0x3F);
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
 
-                    escreverArq = 0x80 | ((percorreArq >> 15) & 0xBF);
+                    escreverArq = 0x80 | ((percorreArq >> 14) & 0x3F);
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
                     
-                    escreverArq = 0x80 | (percorreArq>>9 & 0xBF);
+                    escreverArq = 0x80 | (percorreArq>>1 & 0x3F);   //*
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);   
                     escreverArq = 0x00;
                 }else{
@@ -104,6 +104,7 @@ int main(void){
         }
 
 
+    system("hexdump -C utf8Saida.bin");
 
 
 

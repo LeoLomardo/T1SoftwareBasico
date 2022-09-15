@@ -23,7 +23,6 @@ int main(void){
     arquivo_saida = fopen("utf32Saida.bin", "wb");
     arquivo_entrada = fopen("utf8_peq.bin", "rb");
 
-    
     unsigned char percorreArq;
     unsigned int escreveByte;
     int numBytes = 1;
@@ -32,7 +31,7 @@ int main(void){
     unsigned char aux3 = 0;
 
     
-    unsigned int bom = 0xfffe0000;
+    unsigned int bom = 0x0000feff;
     fwrite(&bom, 4,1,arquivo_saida);
     fread(&percorreArq,sizeof(char),1,arquivo_entrada);
 
@@ -92,7 +91,6 @@ int main(void){
             } 
 
         }while(fread(&percorreArq,sizeof(char),1,arquivo_entrada));
-    
 
 
     fclose(arquivo_saida);
