@@ -95,8 +95,57 @@ int main(void){
             escreverArq = 0x00;
             }while(fread(&percorreArq, sizeof(int), 1, arquivo_entrada));
 
-        }else if(endian == 2){
+        }else if(endian == 2){ //FALTA FAZER TUDO ABAIXO 
+            do{
+                escreverArq = 0x00;
+                if((percorreArq >= 0x00) && (percorreArq <= 0x007F)){
+                    escreverArq =  (percorreArq & 0x7F);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
+                    escreverArq = 0x00;
 
+                }else if((percorreArq >= 0x0080) && (percorreArq <= 0x07FF)){
+                    escreverArq = 0xC0 | ((percorreArq >> 9) & 0xDF);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
+                    escreverArq = 0x00;
+
+                    escreverArq = 0x80 | (percorreArq & 0xBF);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);   
+                    escreverArq = 0x00;
+
+                }else if((percorreArq >= 0x0800) && (percorreArq <= 0xFFFF)){
+                    escreverArq = 0xE0 | ((percorreArq >> 14) & 0xEF);  //E0 = 11100000 & DF = 11011111
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
+                    escreverArq = 0x00;
+
+                    escreverArq = 0x80 | ((percorreArq >> 7) & 0xBF);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
+                    escreverArq = 0x00;
+
+                    escreverArq = 0x80 | (percorreArq>>1 & 0xBF);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);   
+                    escreverArq = 0x00;  
+
+                }else if((percorreArq >= 0x10000) && (percorreArq <= 0x10FFFF)){
+                    escreverArq = 0xF0 | ((percorreArq >> 28) & 0xF7);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
+                    escreverArq = 0x00;
+
+                    escreverArq = 0x80 | ((percorreArq >> 21) & 0x3F);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
+                    escreverArq = 0x00;
+
+                    escreverArq = 0x80 | ((percorreArq >> 14) & 0x3F);
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
+                    escreverArq = 0x00;
+                    
+                    escreverArq = 0x80 | (percorreArq>>1 & 0x3F);   //*
+                    fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);   
+                    escreverArq = 0x00;
+                }else{
+                    printf("ERRO NO CHAR %X -- %c\n", percorreArq,percorreArq);
+                }
+            escreverArq = 0x00;
+            }while(fread(&percorreArq, sizeof(int), 1, arquivo_entrada));
 
         }else{
             printf("BOM Invalido");

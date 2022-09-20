@@ -33,6 +33,7 @@ int verificaBom(unsigned int bom){
 }
 /*      FUNCAO ABAIXO ESTA ESCREVENDO 1 CHAR REFERENTE AO : ERRADO, CONFERIR DEPOIS*/
 int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
+
     unsigned char percorreArq;
     unsigned int escreveByte;
     int numBytes = 1;
@@ -61,8 +62,9 @@ int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
                 printf("2\n");
                 fread(&aux1, sizeof(char),1,arquivo_entrada);
                 aux1 = (aux1<<1) |0x00;
-
-                percorreArq = (percorreArq <<2) | 0x00;
+                aux1 = aux1>>1;
+                percorreArq = (percorreArq <<3) | 0x00;
+                percorreArq = (percorreArq >>3) | 0x00;
                 escreveByte = (escreveByte <<8) |aux1;
                 escreveByte = escreveByte | percorreArq;
             }
@@ -73,10 +75,13 @@ int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
                 
                 aux1 = (aux1<<1) |0x00;
                 aux2 = (aux2<<1) |0x00;
-
-                percorreArq = (percorreArq <<3) | 0x00;
+                aux1 = aux1>>1;
+                aux2 = aux2>>1;
                 escreveByte = (escreveByte <<16) |aux2;
                 escreveByte = (escreveByte <<8) |aux1;
+
+                percorreArq = (percorreArq <<4) | 0x00;
+                percorreArq = (percorreArq >>4) | 0x00;
                 escreveByte = escreveByte | percorreArq;
             }
             if(numBytes == 4){
@@ -89,10 +94,15 @@ int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
                 aux2 = (aux2<<1) |0x00;
                 aux3 = (aux3<<1) |0x00;
 
-                percorreArq = (percorreArq <<4) | 0x00;
+                aux1 = aux1>>1;
+                aux2 = aux2>>1;
+                aux3 = aux3>>1;
+
                 escreveByte = (escreveByte <<24) |aux2;
                 escreveByte = (escreveByte <<16) |aux2;
                 escreveByte = (escreveByte <<8) |aux1;
+                percorreArq = (percorreArq <<5) | 0x00;
+                percorreArq = (percorreArq >>5) | 0x00;
                 escreveByte = escreveByte | percorreArq;
             }
             if(fwrite(&escreveByte,4,1,arquivo_saida) !=1){
@@ -101,7 +111,8 @@ int converteUtf8Para32(FILE *arquivo_entrada, FILE *arquivo_saida){
             } 
 
         }while(fread(&percorreArq,sizeof(char),1,arquivo_entrada));
-    
+
+
     return 0;
 }
 /*          FUNCAO ABAIXO ESTA ACERTANDO QUASE TODOS OS BYTES, ERRANDO 2 DE 20 */
