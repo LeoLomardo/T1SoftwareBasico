@@ -55,12 +55,10 @@ unsigned char percorreArq;
             }
             if(numBytes == 1){ 
                 escreveByte = 0x00;
-                printf("1\n");
                 percorreArq = (percorreArq<<1) | 0x00;
                 escreveByte  = 0x00 | (percorreArq>>1);
             }else if(numBytes == 2){
                 escreveByte = 0x00;
-                printf("2\n");
                 fread(&aux1, sizeof(char),1,arquivo_entrada);
 
                 aux1 = (aux1<<2) |0x00;
@@ -74,7 +72,6 @@ unsigned char percorreArq;
 
             }else if(numBytes == 3){
                 escreveByte = 0x00;
-                printf("3\n");
                 fread(&aux1, sizeof(char),1,arquivo_entrada);
                 fread(&aux2, sizeof(char),1,arquivo_entrada);
 
@@ -95,7 +92,6 @@ unsigned char percorreArq;
                 
             }else if(numBytes == 4){
                 escreveByte = 0x00;
-                printf("4\n");
                 fread(&aux1, sizeof(char),1,arquivo_entrada);
                 fread(&aux2, sizeof(char),1,arquivo_entrada);
                 fread(&aux3, sizeof(char),1,arquivo_entrada);
@@ -135,7 +131,6 @@ unsigned char percorreArq;
 /*          FUNCAO ABAIXO ESTA ACERTANDO QUASE TODOS OS BYTES, ERRANDO 2 DE 20 */
 int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
     unsigned int endian;
-    int i = 0;
     unsigned int percorreArq = 0x00;
     unsigned char escreverArq = 0x00;
 
@@ -251,5 +246,5 @@ int converteUtf32Para8(FILE *arquivo_entrada, FILE *arquivo_saida){
             printf("BOM Invalido");
             return 1;
         }
-
+    return 0;
 }
