@@ -2,20 +2,6 @@
 #include <stdlib.h>
 
 
-int utf8_size(unsigned char aux){
-    if((aux>>3) == 0x1E){
-        printf("Char de 4 byte");
-        return 4;
-    }else if((aux >> 4) == 0xE){
-        printf("Char de 3 byte");
-        return 3;
-    }else if((aux>>5) == 0x6){
-        printf("Char de 2 byte");
-        return 2;
-    }
-    printf("Char de 1 byte");
-    return 1;
-}
 int verificaBom(unsigned int bom){
     unsigned int bigE_bom = 0x0000FEFF;
     unsigned int littleE_bom = 0xfffe0000;
@@ -74,11 +60,11 @@ int main(void){
                     escreverArq = 0x00;  
 
                 }else if((percorreArq >= 0x10000) && (percorreArq <= 0x10FFFF)){
-                    escreverArq = 0xF0 | ((percorreArq >> 28) & 0xF7);
+                    escreverArq = 0xF0 | ((percorreArq >> 29) & 0xF7);  //0xF7 = 11110111  0xF0 = 11110000
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
 
-                    escreverArq = 0x80 | ((percorreArq >> 21) & 0x3F);
+                    escreverArq = 0x80 | ((percorreArq >> 21) & 0x3F); // 0x3F = 00111111
                     fwrite(&escreverArq, sizeof(char), 1, arquivo_saida);
                     escreverArq = 0x00;
 
