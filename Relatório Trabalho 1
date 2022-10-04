@@ -23,12 +23,13 @@ shift, porém depois tivemos uma "epifania" e conseguimos arrumar.
 00000044
 
 Na parte de converter de UTF32->UTF8, estamos enfrentando um pequeno problema relacionado a caracteres que utilizam 4 bytes, tentamos resolver o problema mas não conseguimos.
-Por ainda faltarem 6 dias para a entrega do trabalho, continuaremos tentando, mas até o momento (03/10) não foi.
+O problema enfrentado inicialmente foi resolvido, porém me deparei com 1 único erro no Hexdump do arquivo, onde no arquivo original está "3f" e na minha tradução está 9d.
+Porém ao investigar o problema, eu vi que o byte enterior está f0, que traduzido para binário fica 11110000, logo, o byte seguinte precisa comecar com 10, e no arquivo original ele comeca com 0
     Hexdump do arquivo original:
 00000000  43 4c 41 56 45 20 f0 3f  84 9e 20 41 47 55 41 20  |CLAVE .?.. AGUA |
 00000010  e6 b0 b4 20 2e                                    |... .|
 00000015
     Hexdump do arquivo original:
-00000000  43 4c 41 56 45 20 f0 80  87 87 20 41 47 55 41 20  |CLAVE .... AGUA |
-00000010  e0 b0 8d 20 2e                                    |... .|
+00000000  43 4c 41 56 45 20 f0 9d  84 9e 20 41 47 55 41 20  |CLAVE .... AGUA |
+00000010  e6 b0 b4 20 2e                                    |... .|
 00000015
